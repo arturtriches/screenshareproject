@@ -8,10 +8,13 @@ def handle_command(command):
     action = command.get("acao")
     args = command.get("args", {})
 
-    if action == "ECHO":
-        result = {"ok": True, "texto": args.get("texto", "")}
-    else:
-        result = {"ok": False, "erro": f"acao desconhecida: {action}"}
+    match action:
+        case "ECHO":
+            result = {"ok": True, "texto": args.get("texto", "")}
+        case "EXEC":
+            result = {"ok": True,}
+        case _:
+            result = {"ok": False, "erro": f"acao desconhecida: {action}"}
 
     return {
         "id": command.get("id"),
@@ -19,7 +22,6 @@ def handle_command(command):
         "acao": action,
         "resultado": result,
     }
-
 
 def serve_one_controller(conn, addr):
     print(f"*** ESSA MAQUINA ESTA SENDO CONTROLADA POR {addr[0]}:{addr[1]} ***")
@@ -33,7 +35,6 @@ def serve_one_controller(conn, addr):
         print(f"sessao finalizada: {e}")
     finally:
         conn.close()
-
 
 def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -52,7 +53,6 @@ def main():
         print("parou")
     finally:
         server.close()
-
 
 if __name__ == "__main__":
     main()
