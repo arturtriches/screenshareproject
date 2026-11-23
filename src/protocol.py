@@ -12,7 +12,7 @@ def recv_exactly(sock, n):
     while len(data) < n:
         chunk = sock.recv(n - len(data))
         if chunk == b"":
-            raise ConnectionError("the other side closed the connection")
+            raise ConnectionError("fechou a conexao")
         data += chunk
     return data
 

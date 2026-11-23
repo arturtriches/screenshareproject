@@ -14,11 +14,11 @@ def make_command(action, args):
     }
 
 def main():
-    host = sys.argv[1] if len(sys.argv) > 1 else "127.0.0.1"
+    host = "127.0.0.1"
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((host, PORT))
-    print(f"connected to agent at {host}:{PORT}")
+    print(f"conectou em {host}:{PORT}")
 
     try:
         while True:
@@ -28,9 +28,9 @@ def main():
             command = make_command("ECHO", {"texto": text})
             send_message(sock, command)
             response = recv_message(sock)
-            print(f"agent answered: {response['resultado']}")
+            print(f"respondeu: {response['resultado']}")
     except ConnectionError as e:
-        print(f"lost connection: {e}")
+        print(f"perdeu conexao: {e}")
     finally:
         sock.close()
 

@@ -5,14 +5,13 @@ HOST = "127.0.0.1"
 PORT = 5000
 
 def handle_command(command):
-    """Look at the command's "acao" and build the response dict."""
     action = command.get("acao")
     args = command.get("args", {})
 
     if action == "ECHO":
         result = {"ok": True, "texto": args.get("texto", "")}
     else:
-        result = {"ok": False, "erro": f"unknown action: {action}"}
+        result = {"ok": False, "erro": f"acao desconhecida: {action}"}
 
     return {
         "id": command.get("id"),
@@ -23,16 +22,15 @@ def handle_command(command):
 
 
 def serve_one_controller(conn, addr):
-    """Talk to one connected controller until it disconnects."""
-    print(f"*** THIS MACHINE IS UNDER REMOTE CONTROL by {addr[0]}:{addr[1]} ***")
+    print(f"*** ESSA MAQUINA ESTA SENDO CONTROLADA POR {addr[0]}:{addr[1]} ***")
     try:
         while True:
             command = recv_message(conn)
-            print(f"received: {command}")
+            print(f"recebeu: {command}")
             response = handle_command(command)
             send_message(conn, response)
     except (ConnectionError, ValueError) as e:
-        print(f"session ended: {e}")
+        print(f"sessao finalizada: {e}")
     finally:
         conn.close()
 
@@ -43,15 +41,15 @@ def main():
 
     server.bind((HOST, PORT))
     server.listen()
-    print(f"agent listening on port {PORT} (Ctrl+C to quit)")
+    print(f"escutando na porta {PORT} (Ctrl+C pra sair)")
 
     try:
         while True:
             conn, addr = server.accept()
             serve_one_controller(conn, addr)
-            print("waiting for next controller...")
+            print("esperando proximo controlador")
     except KeyboardInterrupt:
-        print("agent stopped")
+        print("parou")
     finally:
         server.close()
 
